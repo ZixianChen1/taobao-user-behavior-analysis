@@ -1,0 +1,6 @@
+column_name,data_type
+time,str
+user_id,int64
+item_id,int64
+item_category,int64
+behavior_type,int64

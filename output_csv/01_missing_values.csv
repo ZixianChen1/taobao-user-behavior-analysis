@@ -1,0 +1,6 @@
+column_name,missing_count,missing_ratio
+time,0,0.0
+user_id,0,0.0
+item_id,0,0.0
+item_category,0,0.0
+behavior_type,0,0.0
