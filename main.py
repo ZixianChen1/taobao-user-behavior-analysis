@@ -25,7 +25,8 @@ from src.data_check import (
     save_data_types,
     save_duplicate_check,
     save_missing_values,
-    save_unique_counts
+    save_unique_counts,
+    save_validity_check
 )
 from src.data_cleaning import clean_data
 from src.data_loader import load_data
@@ -59,6 +60,16 @@ def main() -> None:
 
     # 保存重复行检查结果
     save_duplicate_check(raw_df, OUTPUT_DIR)
+
+    # 保存数据合理性检查结果
+    # 检查 behavior_type 是否只有 1、2、3、4
+    # 检查 time 是否存在非法日期或非法小时
+    save_validity_check(
+        raw_df,
+        OUTPUT_DIR,
+        valid_behavior_types=list(BEHAVIOR_MAP.keys()),
+        time_format=TIME_FORMAT
+    )
 
     # 清洗和预处理数据
     cleaned_df = clean_data(

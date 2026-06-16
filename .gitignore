@@ -185,6 +185,7 @@ data/*.csv
 
 # SQLite database
 database/*.db
+database/*.db-journal
 
 # Python cache
 __pycache__/
