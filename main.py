@@ -1,5 +1,5 @@
 """
-项目主运行文件：串联读取、检查、清洗、入库和基础统计流程。
+项目主运行文件：串联读取、检查、清洗、入库、基础统计和结果校验流程。
 """
 
 from config import (
@@ -31,11 +31,12 @@ from src.data_check import (
 from src.data_cleaning import clean_data
 from src.data_loader import load_data
 from src.database import save_dataframe_to_sqlite
+from src.result_validation import validate_outputs
 
 
 def main() -> None:
     """
-    运行第一阶段数据处理和基础统计。
+    运行第一阶段数据处理、基础统计和结果校验。
     """
     # 创建输出文件夹
     OUTPUT_DIR.mkdir(exist_ok=True)
@@ -106,7 +107,10 @@ def main() -> None:
     # 保存转化率统计
     save_conversion_statistics(cleaned_df, OUTPUT_DIR)
 
-    print("\n第一阶段数据处理和基础统计已全部完成。")
+    # 校验 output_csv 中各个统计结果是否一致
+    validate_outputs(OUTPUT_DIR)
+
+    print("\n第一阶段数据处理、基础统计和结果校验已全部完成。")
 
 
 # 直接运行 main.py 时执行 main()

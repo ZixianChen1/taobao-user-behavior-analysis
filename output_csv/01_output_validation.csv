@@ -1,0 +1,15 @@
+check_item,expected,actual,is_passed
+behavior_total_equals_total_records,12256906,12256906,True
+user_total_equals_total_records,12256906,12256906,True
+item_total_equals_total_records,12256906,12256906,True
+category_total_equals_total_records,12256906,12256906,True
+daily_total_equals_total_records,12256906,12256906,True
+hourly_total_equals_total_records,12256906,12256906,True
+pv_count_matches_behavior_distribution,11550581,11550581,True
+fav_count_matches_behavior_distribution,242556,242556,True
+cart_count_matches_behavior_distribution,343564,343564,True
+buy_count_matches_behavior_distribution,120205,120205,True
+invalid_behavior_type_count_is_zero,0,0,True
+invalid_time_count_is_zero,0,0,True
+invalid_hour_count_is_zero,0,0,True
+invalid_date_count_is_zero,0,0,True
