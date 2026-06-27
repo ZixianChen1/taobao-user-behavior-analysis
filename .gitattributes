@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+output_csv/03_item_features.csv filter=lfs diff=lfs merge=lfs -text
+output_csv/03_recent_behavior_features.csv filter=lfs diff=lfs merge=lfs -text
+output_csv/03_user_item_features.csv filter=lfs diff=lfs merge=lfs -text
