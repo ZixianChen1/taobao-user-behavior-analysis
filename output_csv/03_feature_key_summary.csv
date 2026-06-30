@@ -1,0 +1,8 @@
+﻿table_name,key_columns,row_count,column_count,is_key_unique,usage
+03_user_features.csv,user_id,10000,13,True,用于后续特征宽表连接
+03_item_features.csv,item_id,2876947,11,True,用于后续特征宽表连接
+03_category_features.csv,item_category,8916,11,True,用于后续特征宽表连接
+03_user_item_features.csv,user_id + item_id,4686904,14,True,用于后续特征宽表连接
+03_user_category_features.csv,user_id + item_category,900748,11,True,用于后续特征宽表连接
+03_time_features.csv,date + hour,744,16,True,用于后续特征宽表连接
+03_recent_behavior_features.csv,user_id + item_id,4686904,10,True,用于后续特征宽表连接
