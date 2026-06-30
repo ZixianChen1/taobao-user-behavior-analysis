@@ -1,0 +1,3 @@
+﻿step_name,status,elapsed_seconds,elapsed_minutes,peak_memory_mb,peak_memory_gb,error_message
+feature_engineering,success,98.08,1.63,3182.94,3.11,
+feature_validation,success,74.58,1.24,4058.96,3.96,
