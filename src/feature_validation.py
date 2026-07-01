@@ -391,14 +391,14 @@ def check_row_count(
     table_name: str,
     df: pd.DataFrame,
     key_cols: list[str],
-    source_df: pd.DataFrame,
+    source_key_counts: dict[str, int],
     validation_results: list[dict]
 ) -> None:
     """
     检查特征表行数是否等于原始数据中的唯一 key 数量。
     """
     # 统计原始数据中的唯一 key 数量
-    expected_count = source_df[key_cols].drop_duplicates().shape[0]
+    expected_count = source_key_counts[" + ".join(key_cols)]
 
     # 统计特征表行数
     actual_count = len(df)
@@ -538,6 +538,32 @@ def create_key_summary(
         })
 
     return pd.DataFrame(key_summary)
+
+
+def create_source_key_counts(
+    source_df: pd.DataFrame,
+    feature_config: dict
+) -> dict[str, int]:
+    """
+    统计原始数据中不同 key 的唯一值数量。
+    """
+    source_key_counts = {}
+
+    for config in feature_config.values():
+        # 获取 key 字段
+        key_cols = config["key_cols"]
+
+        # 设置 key 名称
+        key_name = " + ".join(key_cols)
+
+        # 已经统计过的 key 不重复计算
+        if key_name in source_key_counts:
+            continue
+
+        # 统计原始数据中的唯一 key 数量
+        source_key_counts[key_name] = source_df[key_cols].drop_duplicates().shape[0]
+
+    return source_key_counts
 
 
 def get_behavior_counts(sub_df: pd.DataFrame) -> dict:
@@ -1180,6 +1206,12 @@ def validate_feature_outputs() -> None:
     # 获取特征文件配置
     feature_config = get_feature_file_config()
 
+    # 统计原始数据中不同 key 的唯一值数量
+    source_key_counts = create_source_key_counts(
+        source_df,
+        feature_config
+    )
+
     # 存放汇总校验结果
     validation_results = []
 
@@ -1239,7 +1271,7 @@ def validate_feature_outputs() -> None:
             table_name,
             df,
             key_cols,
-            source_df,
+            source_key_counts,
             validation_results
         )
 

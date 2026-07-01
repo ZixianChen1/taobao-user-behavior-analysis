@@ -149,42 +149,27 @@ def create_user_features(df: pd.DataFrame) -> pd.DataFrame:
     user_features = add_total_and_rate(user_features, "user")
 
     # 用户活跃天数
-    active_days = (
-        df
-        .groupby("user_id")["date"]
-        .nunique()
-        .reset_index(name="user_active_days")
-    )
-
     # 用户活跃小时数
-    active_hours = (
-        df
-        .groupby("user_id")["hour"]
-        .nunique()
-        .reset_index(name="user_active_hours")
-    )
-
     # 用户互动过的商品数量
-    item_count = (
-        df
-        .groupby("user_id")["item_id"]
-        .nunique()
-        .reset_index(name="user_interacted_item_count")
-    )
-
     # 用户互动过的类目数量
-    category_count = (
+    user_extra_features = (
         df
-        .groupby("user_id")["item_category"]
-        .nunique()
-        .reset_index(name="user_interacted_category_count")
+        .groupby("user_id")
+        .agg(
+            user_active_days=("date", "nunique"),
+            user_active_hours=("hour", "nunique"),
+            user_interacted_item_count=("item_id", "nunique"),
+            user_interacted_category_count=("item_category", "nunique")
+        )
+        .reset_index()
     )
 
     # 合并用户补充特征
-    user_features = user_features.merge(active_days, on="user_id", how="left")
-    user_features = user_features.merge(active_hours, on="user_id", how="left")
-    user_features = user_features.merge(item_count, on="user_id", how="left")
-    user_features = user_features.merge(category_count, on="user_id", how="left")
+    user_features = user_features.merge(
+        user_extra_features,
+        on="user_id",
+        how="left"
+    )
 
     user_features.to_csv(
         OUTPUT_DIR / "03_user_features.csv",
@@ -207,24 +192,23 @@ def create_item_features(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     # 商品所属类目
-    item_category = (
+    # 商品覆盖用户数
+    item_extra_features = (
         df
-        .groupby("item_id")["item_category"]
-        .first()
+        .groupby("item_id")
+        .agg(
+            item_category=("item_category", "first"),
+            item_user_count=("user_id", "nunique")
+        )
         .reset_index()
     )
 
-    # 商品覆盖用户数
-    item_user_count = (
-        df
-        .groupby("item_id")["user_id"]
-        .nunique()
-        .reset_index(name="item_user_count")
-    )
-
     # 合并商品补充特征
-    item_features = item_features.merge(item_category, on="item_id", how="left")
-    item_features = item_features.merge(item_user_count, on="item_id", how="left")
+    item_features = item_features.merge(
+        item_extra_features,
+        on="item_id",
+        how="left"
+    )
 
     # 补充商品互动次数和转化比例
     item_features = add_total_and_rate(item_features, "item")
@@ -250,30 +234,20 @@ def create_category_features(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     # 类目覆盖用户数
-    category_user_count = (
-        df
-        .groupby("item_category")["user_id"]
-        .nunique()
-        .reset_index(name="category_user_count")
-    )
-
     # 类目商品数量
-    category_item_count = (
+    category_extra_features = (
         df
-        .groupby("item_category")["item_id"]
-        .nunique()
-        .reset_index(name="category_item_count")
+        .groupby("item_category")
+        .agg(
+            category_user_count=("user_id", "nunique"),
+            category_item_count=("item_id", "nunique")
+        )
+        .reset_index()
     )
 
     # 合并类目补充特征
     category_features = category_features.merge(
-        category_user_count,
-        on="item_category",
-        how="left"
-    )
-
-    category_features = category_features.merge(
-        category_item_count,
+        category_extra_features,
         on="item_category",
         how="left"
     )
@@ -302,38 +276,32 @@ def create_user_item_features(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     # 用户商品对应的类目
-    user_item_category = (
+    # 用户对该商品的最后一次行为时间
+    user_item_extra_features = (
         df
-        .groupby(["user_id", "item_id"])["item_category"]
-        .first()
+        .groupby(["user_id", "item_id"])
+        .agg(
+            item_category=("item_category", "first"),
+            last_behavior_time=("time", "max")
+        )
         .reset_index()
     )
 
+    # 提取最后一次行为小时
+    user_item_extra_features["last_behavior_hour"] = (
+        user_item_extra_features["last_behavior_time"].dt.hour
+    )
+
     user_item_features = user_item_features.merge(
-        user_item_category,
+        user_item_extra_features[
+            ["user_id", "item_id", "item_category", "last_behavior_hour"]
+        ],
         on=["user_id", "item_id"],
         how="left"
     )
 
     # 补充用户商品互动次数和转化比例
     user_item_features = add_total_and_rate(user_item_features, "user_item")
-
-    # 用户对该商品的最后一次行为时间
-    last_behavior = (
-        df
-        .groupby(["user_id", "item_id"])["time"]
-        .max()
-        .reset_index(name="last_behavior_time")
-    )
-
-    # 提取最后一次行为小时
-    last_behavior["last_behavior_hour"] = last_behavior["last_behavior_time"].dt.hour
-
-    user_item_features = user_item_features.merge(
-        last_behavior[["user_id", "item_id", "last_behavior_hour"]],
-        on=["user_id", "item_id"],
-        how="left"
-    )
 
     # 是否为晚间高峰时段
     user_item_features["is_peak_hour"] = (
