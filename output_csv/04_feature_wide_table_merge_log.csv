@@ -1,0 +1,6 @@
+﻿step_name,before_rows,after_rows,row_count_changed,before_columns,after_columns,added_columns
+merge_03_user_features.csv,4686904,4686904,False,14,26,12
+merge_03_item_features.csv,4686904,4686904,False,26,35,9
+merge_03_category_features.csv,4686904,4686904,False,35,45,10
+merge_03_user_category_features.csv,4686904,4686904,False,45,54,9
+merge_03_recent_behavior_features.csv,4686904,4686904,False,54,61,7

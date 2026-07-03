@@ -1,0 +1,8 @@
+﻿check_item,value,description
+total_rows,4686904.0,宽表总行数
+total_columns,61.0,宽表总列数
+total_missing_values,0.0,宽表缺失值总数
+duplicate_user_item_key_count,0.0,user_id + item_id 重复数量
+not_buy_count,4583908.0,未购买样本数量
+buy_count,102996.0,购买样本数量
+buy_rate,0.02197527408284872,购买样本比例
