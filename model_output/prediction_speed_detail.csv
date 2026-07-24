@@ -1,0 +1,4 @@
+﻿test_round,sample_method,sample_count,random_state,prediction_time_seconds,avg_time_per_sample_ms
+1,random_sample,10000,42,0.013597,0.00136
+2,random_sample,10000,43,0.009149,0.000915
+3,random_sample,10000,44,0.012284,0.001228

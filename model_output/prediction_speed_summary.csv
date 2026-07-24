@@ -1,2 +1,2 @@
-﻿sample_count,prediction_time_seconds,avg_time_per_sample_ms
-10000,0.0135,0.00135
+﻿sample_method,sample_count,repeat_times,average_prediction_time_seconds,average_time_per_sample_ms,minimum_prediction_time_seconds,maximum_prediction_time_seconds
+random_sample,10000,3,0.011677,0.001168,0.009149,0.013597
